@@ -9,36 +9,47 @@ class MoviesController < ApplicationController
     @movie = Movie.find(id) # look up movie by unique ID
     # will render app/views/movies/show.<extension> by default
   end
-
-  def index
-    @movies = Movie.all
-    @all_ratings = Movie.all_ratings
-    if params[:sort]
-      @sort = params[:sort]
-    end
-    
-    if params[:commit] == 'Refresh'
-      if params[:ratings]
-        @ratings_filter = params[:ratings].keys
-      else
-        @ratings_filter=@all_ratings
-      end
-    else
-      if params[:ratings]
-        @ratings_filter = params[:ratings].keys
-      else
-        if session[:ratings]
-          @ratings_filter=session[:ratings]
+def index
+      @movies = Movie.all
+     @all_ratings = Movie.all_ratings
+ 
+     if params[:sort]
+       @sort = params[:sort]
+     else
+       @sort = session[:sort]
+     end
+     
+     if params[:commit] == 'Refresh'
+       if params[:ratings]
+         @ratings_filter = params[:ratings].keys
+       else
+         @ratings_filter=@all_ratings
+       end
+     else
+       if params[:ratings]
+         @ratings_filter = params[:ratings].keys
+       else
+         if session[:ratings]
+           @ratings_filter=session[:ratings]
         else
           @ratings_filter = @all_ratings
         end
       end
-    end
-    
+     end
+     
+     if @sort!=session[:sort]
+       session[:sort] = @sort
+     end
+     if @ratings_filter!=session[:ratings]
+       session[:ratings] = @ratings_filter
+      end
+      
       @movies = Movie.sorting(@sort)
       @movies = @movies.sorting(@sort)
       @movies = @movies.rating(@ratings_filter)
-  end
+      
+  
+    end
 
   def new
     # default: render 'new' template
