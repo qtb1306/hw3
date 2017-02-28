@@ -14,9 +14,10 @@ class MoviesController < ApplicationController
     @movies = Movie.all
     if params[:sort]
       @sort = params[:sort]
-    else
-      @sort = session[:sort]
     end
+
+    @movies = @movies.sorting(@sort)
+
   end
 
   def new
